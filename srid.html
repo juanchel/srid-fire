@@ -1,0 +1,135 @@
+<head>
+  <title>srid</title>
+  <link href='https://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+  <div class="navbar navbar-default navbar-fixed-top srid-green" role="navigation">
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand srid-brand" href="#">FIRE KILLER</a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Home</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          {{> loginButtons}}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  {{#if currentUser}}
+    {{#if isAdmin}}
+      {{> adminPage}}
+    {{else}}
+      {{> appPage}}
+    {{/if}}
+  {{else}}
+    {{> landingPage}}
+  {{/if}}
+</body>
+
+<template name="landingPage">
+  <div class="jumbotron">
+    <div class="container">
+      <h1>Fire Killer</h1>
+      <p>Welcome to the prototype of the Fire Killer app. To demo the app, please login or sign up.</p>
+    </div>
+  </div>
+  <footer class="footer srid-green">
+     <div class="bottom">
+        &copy; Carnegie Mellon University
+     </div>
+  </footer>
+</template>
+
+<template name="adminPage">
+  <br/>
+  <div class="container">
+    <div class="row">
+      <div class="panel panel-default">
+        <div class="panel-heading">Admin Panel</div>
+        <div class="panel-body">
+          <button id="btn-par" class="btn btn-primary">Send PAR</button>
+          <button id="btn-evac" class="btn btn-primary">Send Evacuate</button>
+          <button id="btn-clear" class="btn btn-primary">Clear All</button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      {{#each users}}
+        {{> firefighter}}
+      {{/each}}
+    </div>
+  </div>
+</template>
+
+<template name="firefighter">
+  <div class="col-md-4">
+    <div class="panel {{panelRed profile.oxygen profile.status}}">
+      <div class="panel-heading">{{username}}</div>
+      <div class="panel-body">
+        <div class="alert alert-{{statusAlert profile.status}}" role="alert"><strong>{{statusNote profile.status}}</strong></div>
+        <div class="progress">
+          <div class="progress-bar {{progressBarRed profile.oxygen}}" style="width: {{profile.oxygen}}%">
+            {{profile.oxygen}}%
+          </div>
+        </div>
+        <ul class="list-group">
+          <li class="list-group-item">
+            Motion Sensor
+            <span class="badge">OK</span>
+          </li>
+          <li class="list-group-item">
+            Heat Sensor
+            <span class="badge">OK</span>
+          </li>
+          <li class="list-group-item">
+            Atmosphere
+            <span class="badge">OK</span>
+          </li>
+        </ul>
+        <button class="btn btn-primary btn-down" id="down-{{_id}}">Man Down</button>
+        <button class="btn btn-primary btn-single-par" id="par-{{_id}}">PAR</button>
+        <button class="btn btn-primary btn-single-evac" id="evac-{{_id}}">Evac</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template name="appPage">
+  <div class="container">
+    <br/>
+    <div class="row center-block">
+      <div class="btn-group">
+        <button id="btn-ack" class="btn btn-default"><span class="glyphicon glyphicon-ok"></span>  Ack</button>
+        <button id="btn-mayday" class="btn btn-default"><span class="glyphicon glyphicon-warning-sign"></span> Mayday</button>
+        <button id="btn-oxy-plus" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></button>
+        <button id="btn-oxy-minus" class="btn btn-default"><span class="glyphicon glyphicon-minus"></span></button>
+      </div>
+    </div>
+    <h3>00:00:00</h3>
+    <div class="progress">
+      <div class="progress-bar" style="width: {{currentUser.profile.oxygen}}%">
+        {{currentUser.profile.oxygen}}%
+      </div>
+    </div>
+
+    <div class="alert-box center-block text-center status-{{currentUser.profile.status}}">
+      {{#if isStatus "ok"}}
+        <img src="http://i.imgur.com/IxgoDat.png" class="img-responsive">
+      {{else}}
+        <br/>
+        {{statusMessage}}
+      {{/if}}
+    </div>
+  </div>
+</template>
